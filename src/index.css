@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.nav-link {
+  @apply text-gray-700 hover:text-blue-500 transition duration-200 block md:inline-block;
+}
