@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "../src/redux/cartSlice";
+import ProductModal from "./ProductModal"; // Import the modal component
 
 const Furnitures = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     fetch("https://api.escuelajs.co/api/v1/products")
@@ -39,7 +41,8 @@ const Furnitures = () => {
           .map((product) => (
             <div
               key={product.id}
-              className="relative bg-white p-4 rounded-xl shadow-lg text-left"
+              className="relative bg-white p-4 rounded-xl shadow-lg text-left cursor-pointer"
+              onClick={() => setSelectedProduct(product)}
             >
               <img
                 src={product.images[0]}
@@ -48,7 +51,10 @@ const Furnitures = () => {
               />
               <div
                 className="absolute top-2 right-2 bg-white p-2 text-2xl font-bold cursor-pointer rounded-full shadow-md"
-                onClick={() => dispatch(addItem(product))}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent modal from opening when clicking +
+                  dispatch(addItem(product));
+                }}
               >
                 +
               </div>
@@ -60,6 +66,11 @@ const Furnitures = () => {
             </div>
           ))}
       </div>
+
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </div>
   );
 };

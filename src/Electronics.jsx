@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "../src/redux/cartSlice";
+import ProductModal from "./ProductModal";
 
 const Electronics = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     fetch("https://api.escuelajs.co/api/v1/products")
@@ -45,7 +47,8 @@ const Electronics = () => {
               <img
                 src={product.images[0]}
                 alt={product.title}
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-48 object-cover rounded-lg cursor-pointer"
+                onClick={() => setSelectedProduct(product)}
               />
               <button
                 className="absolute top-2 right-2 bg-white p-2 text-xl font-bold rounded-full shadow-md hover:bg-gray-200 transition duration-300"
@@ -63,6 +66,11 @@ const Electronics = () => {
             </div>
           ))}
       </div>
+
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addItem } from "../src/redux/cartSlice";
+import ProductModal from "./ProductModal"; // Import the modal component
 
 const Toys = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     fetch("https://api.escuelajs.co/api/v1/products")
@@ -13,13 +15,11 @@ const Toys = () => {
         setProducts(
           data.filter((product) => product.category.name === "Miscellaneous")
         )
-      ) // Filters electronics
+      )
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.cartItems);
-  console.log("data", cartItems);
 
   return (
     <div className="text-center p-5">
@@ -45,7 +45,8 @@ const Toys = () => {
               <img
                 src={product.images[0]}
                 alt={product.title}
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-full h-48 object-cover rounded-lg cursor-pointer"
+                onClick={() => setSelectedProduct(product)}
               />
               <button
                 className="absolute top-2 right-2 bg-white p-2 text-xl font-bold rounded-full shadow-md hover:bg-gray-200 transition duration-300"
@@ -63,6 +64,11 @@ const Toys = () => {
             </div>
           ))}
       </div>
+
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </div>
   );
 };
